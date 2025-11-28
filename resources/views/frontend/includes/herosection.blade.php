@@ -1,9 +1,4 @@
-@extends('frontend.layouts.master')
-{{-- @dd($favicon); --}}
 
-
-
-@section('content')
 <style>
     .modal-content {
         position: relative;
@@ -302,60 +297,109 @@
     }
 </style>
 
-@include('frontend.includes.herosection')
-@include('frontend.includes.Section2')
-@include('frontend.includes.Section3') 
-@include('frontend.includes.blog')
-@include('frontend.includes.Section4')
-@include('frontend.includes.Section5')
-@include('frontend.includes.sectiondivider')   
-<!-- @include('frontend.includes.gallery') -->
-@include('frontend.includes.teams')
-@include('frontend.includes.collandair')
+<!-- HERO CAROUSEL -->
+<div id="heroSlider" class="carousel slide" data-bs-ride="carousel">
 
+    <!-- SLIDES -->
+    <div class="carousel-inner">
+        @foreach ($coverimages as $key => $img)
+            <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                <img src="{{ asset('uploads/coverimage/' . $img->image) }}" class="d-block w-100 hero-img">
+            </div>
+        @endforeach
+    </div>
 
+    <!-- INDICATORS -->
+    <div class="carousel-indicators">
+        @foreach ($coverimages as $key => $img)
+            <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="{{ $key }}"
+                class="{{ $key == 0 ? 'active' : '' }}"></button>
+        @endforeach
+    </div>
 
+    <!-- OVERLAY CONTENT -->
+    <div class="hero-content-wrapper position-absolute top-50 start-50 translate-middle w-100">
+        <div class="container">
+            <div class="row align-items-center">
 
+                <!-- LEFT SECTION -->
+                <div class="col-lg-6 col-md-5">
+                    <h1 class="fw-bold display-4 mb-3">
+                        <span id="typingText"></span>
+                    </h1>
 
-
-<!-- Modal Structure -->
-<div class="modal fade" id="trackingModal" tabindex="-1" aria-labelledby="trackingModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="d-flex align-items-center" id="company-info-print">
-                    <img src="{{ url('image/logo.png') }}" class="img-fluid me-2" alt="logo" style="height: 100px;">
-                    <p>
-                        <span style="font-size: 22px; font-weight: 800">KTM NEPAL LOGISTIC</span><br>
-                        <strong>Tinkune-32, Kathmandu</strong> <br>
-                        9842967713, 9813006799, 015920481 <br>
-                        info@ktmnepalogistic.com
+                    <p class="mb-4 fs-4">
+                        Want to send important parcels to your loved ones with complete safety, speed, and reliability?
+                        We make sure your package reaches them on time, every time—handled with care from start to finish.
                     </p>
-                </div>
-                <img id="barcode" class="barcode img-fluid" alt="Barcode">
-                <div class="ms-auto d-flex align-items-center">
-                    <button type="button" class="btn btn-secondary me-2 print-hide" id="print-btn">
-                        <i class="fa fa-print"></i> Print
-                    </button>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-            </div>
 
-            <div class="modal-body" id="tracking-result">
-                <!-- Tracking result will be inserted here -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <div class="bg-dark bg-opacity-50 p-4 rounded shadow">
+                        <h6 class="text-uppercase fw-bold mb-3">Enter Your Tracking Number</h6>
+
+                        <form id="track-form">
+                            @csrf
+                            <div class="input-group">
+                                <input type="text" id="tracking_number" name="tracking_number"
+                                    class="form-control" placeholder="Enter Your Tracking Number" required>
+                                <button class="btn btn-primary" type="submit">Track</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- RIGHT SECTION -->
+                @php
+                    $sixImages = collect();
+                    foreach ($images as $image) {
+                        foreach ($image->img as $url) {
+                            if ($sixImages->count() < 6) {
+                                $sixImages->push($url);
+                            }
+                        }
+                        if ($sixImages->count() >= 6) break;
+                    }
+                @endphp
+
+                <div class="col-lg-6 col-md-7 mt-4 mt-md-0">
+                    <div class="image-grid d-grid gap-2" style="grid-template-columns: repeat(3, 1fr);">
+                        @foreach ($sixImages as $url)
+                            <div class="image-box rounded"
+                                 style="background-image: url('{{ asset($url) }}'); 
+                                        background-size: cover;
+                                        background-position: center;
+                                        height: 150px;">
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
 </div>
 
-<div id="error-message" class="alert alert-danger mt-4 d-none">
-    <!-- Error message will be inserted here -->
-</div>
-</div>
-</div>
+
+<!-- TYPING EFFECT JS -->
+<script>
+    const text = "KTM Nepal Logistic";
+    let i = 0;
+
+    function typeEffect() {
+        if (i < text.length) {
+            document.getElementById("typingText").innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeEffect, 90);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", typeEffect);
+</script>
+
+
+
+
+
 <script>
     document.getElementById('track-form').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -577,5 +621,3 @@
         return new Date(dateString).toLocaleDateString(undefined, options);
     }
 </script>
-
-@stop

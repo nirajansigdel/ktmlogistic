@@ -654,8 +654,9 @@ color: rgb(25, 37, 78) !important;
 
 /* For service background */
 .secondSection{
-  background-image: linear-gradient(rgb(9, 28, 72), rgb(25, 37, 78));
+  background:#0b2f63;
 }
+
 
 .btn{
   background-color: rgb(9, 28, 72) !important;
@@ -1768,3 +1769,32 @@ height: 500px;
  .testimonial_page h3, .testimonial_page h5, .testimonial_page h6{
   text-align: center;
  }
+
+ 
+    /* Section Header */
+     .section-header {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 3rem;
+    }
+
+ .section-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: #001a4d;
+        margin-bottom: 0.5rem;
+    }
+
+ .section-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 1.5rem;
+    }
+
+.title-underline {
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #0d6efd, #0653c7);
+        margin: 0 auto;
+        border-radius: 2px;
+    }

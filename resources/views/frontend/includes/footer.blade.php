@@ -2,7 +2,7 @@
 
 <style>
     .footer-section {
-        background: linear-gradient(135deg, #031233 0%, #19254e 100%);
+        background:#0b2f63;
         color: #c7bfbf;
         position: relative;
         overflow: hidden;
@@ -15,6 +15,13 @@
         left: 0;
         width: 100%;
         height: 100%;
+    }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 700ms ease-out, transform 700ms ease-out; will-change: opacity, transform; }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+    /* Slight stagger helper when used on children */
+    .reveal-stagger > * { transform-origin: 0 0; }
+
         background: radial-gradient(circle at 20% 50%, rgba(255, 94, 20, 0.05) 0%, transparent 50%);
         pointer-events: none;
     }
@@ -186,6 +193,36 @@
         }
     }
 </style>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var sections = document.querySelectorAll('section');
+        if (!sections || !sections.length) return;
+
+        sections.forEach(function (sec) {
+            // mark all sections with reveal class so CSS handles initial state
+            if (!sec.classList.contains('reveal')) sec.classList.add('reveal');
+        });
+
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function (entries, obs) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+
+            sections.forEach(function (sec) { observer.observe(sec); });
+        } else {
+            // fallback: reveal all
+            sections.forEach(function (sec) { sec.classList.add('revealed'); });
+        }
+    });
+</script>
 
 
 <footer class="footer-section pt-5 pb-4">

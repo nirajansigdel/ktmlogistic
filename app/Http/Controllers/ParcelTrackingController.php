@@ -40,7 +40,13 @@ class ParcelTrackingController extends Controller
     {
         try {
             $response = $this->parcelTrackingService->fetchData('customers');
-            if (is_array($response) && !empty($response)) {
+            // If the API returned an error payload (e.g. ['error' => ...]),
+            // treat it as no data so the view doesn't attempt to iterate
+            // string values as customer records.
+            if (is_array($response) && isset($response['error'])) {
+                Log::error('API error fetching customers: ' . json_encode($response));
+                $customers = [];
+            } elseif (is_array($response) && !empty($response)) {
                 $customers = $response;
             } else {
                 Log::warning('No customers data found.');
@@ -59,13 +65,20 @@ class ParcelTrackingController extends Controller
     {
         try {
             $response = $this->parcelTrackingService->fetchData('receivers');
-            if (is_array($response) && !empty($response)) {
-                $receivers = $response; 
-                return view('logistics.receivers.index', ['receivers' => $receivers]);
+            // Normalize API responses: if API returned an error payload,
+            // treat it as no data so the Blade view won't attempt to
+            // access offsets on string values.
+            if (is_array($response) && isset($response['error'])) {
+                Log::error('API error fetching receivers: ' . json_encode($response));
+                $receivers = [];
+            } elseif (is_array($response) && !empty($response)) {
+                $receivers = $response;
             } else {
                 Log::warning('No receivers data found.');
-                return view('logistics.receivers.index', ['receivers' => []]);
+                $receivers = [];
             }
+
+            return view('logistics.receivers.index', ['receivers' => $receivers]);
         } catch (\Exception $e) {
             Log::error('Error fetching receivers: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while fetching receivers.'], 500);

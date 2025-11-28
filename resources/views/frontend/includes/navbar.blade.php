@@ -90,7 +90,7 @@
 }
 </style>
 
-<header class="fixed-top bg-transparent" id="mainHeader">
+<header class="secondSection  sticky" id="mainHeader">
     <nav class="navbar navbar-expand-lg navbar-dark py-3">
         <div class="container">
 
